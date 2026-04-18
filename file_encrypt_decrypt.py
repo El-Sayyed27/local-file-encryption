@@ -6,9 +6,11 @@ import os
 
 # ---------------- KEY HANDLING ----------------
 if os.path.exists("mykey.key"):
-    with open("mykey.key", "rb") as mykey:
-        key = mykey.read()
+    key_path = "mykey.key"
+elif os.path.exists(".mykey.key"):
+    key_path = ".mykey.key"
 else:
+    print("Generating new key...")
     key = Fernet.generate_key()
     with open("mykey.key", "wb") as mykey:
         mykey.write(key)
@@ -21,6 +23,11 @@ else:
             os.rename("mykey.key", ".mykey.key")
     except Exception as e:
         print(f"Could not hide key file: {e}")
+
+    key_path = "mykey.key"
+
+with open(key_path, "rb") as mykey:
+    key = mykey.read()
 
 cipher = Fernet(key)
 print("Key loaded successfully")
